@@ -14,15 +14,14 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     #Lidar 01
-    serial_port_01 = LaunchConfiguration('serial_port_01', default='/dev/ttyUSB0')
+    serial_port_01 = LaunchConfiguration('serial_port_01', default='/dev/ttyUSB1')
     serial_baudrate_01 = LaunchConfiguration('serial_baudrate_01', default='115200')
-    frame_id_01 = LaunchConfiguration('frame_id_01', default='laser01')
-
+    frame_id_01 = LaunchConfiguration('frame_id_01', default='lidarFront')
 
     #Lidar 02
-    serial_port_02 = LaunchConfiguration('serial_port_02', default='/dev/ttyUSB1')
+    serial_port_02 = LaunchConfiguration('serial_port_02', default='/dev/ttyUSB2')
     serial_baudrate_02 = LaunchConfiguration('serial_baudrate_02', default='115200')
-    frame_id_02 = LaunchConfiguration('frame_id_02', default='laser02')
+    frame_id_02 = LaunchConfiguration('frame_id_02', default='lidarBack')
 
     channel_type =  LaunchConfiguration('channel_type', default='serial')
     inverted = LaunchConfiguration('inverted', default='false')
@@ -98,7 +97,7 @@ def generate_launch_description():
                          'angle_compensate': angle_compensate, 
                          'scan_mode': scan_mode}],
             remappings=[
-                ('scan', 'scan_01')
+                ('scan', 'front_scan')
             ],
             output='screen')
     
@@ -114,7 +113,7 @@ def generate_launch_description():
                          'angle_compensate': angle_compensate, 
                          'scan_mode': scan_mode}],
             remappings=[
-                ('scan', 'scan_02')
+                ('scan', 'back_scan')
             ],
             output='screen')
     
