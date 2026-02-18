@@ -43,48 +43,48 @@ def generate_launch_description():
     channel_type_arg = DeclareLaunchArgument(
             'channel_type',
             default_value=channel_type,
-            description='Specifying channel type of lidar'),
+            description='Specifying channel type of lidar')
     
     serial_port_01_arg = DeclareLaunchArgument(
             'serial_port_01',
             default_value=serial_port_01,
-            description='Specifying usb port to connected lidar 01'),
+            description='Specifying usb port to connected lidar 01')
     serial_baudrate_01_arg = DeclareLaunchArgument(
             'serial_baudrate_01',
             default_value=serial_baudrate_01,
-            description='Specifying usb port baudrate to connected lidar 01'),
+            description='Specifying usb port baudrate to connected lidar 01')
     frame_id_01_arg = DeclareLaunchArgument(
             'frame_id_01',
             default_value=frame_id_01,
-            description='Specifying frame_id of lidar 01'),
+            description='Specifying frame_id of lidar 01')
     
     serial_port_02_arg = DeclareLaunchArgument(
             'serial_port_02',
             default_value=serial_port_02,
-            description='Specifying usb port to connected lidar 02'),
+            description='Specifying usb port to connected lidar 02')
     serial_baudrate_02_arg = DeclareLaunchArgument(
             'serial_baudrate_02',
             default_value=serial_baudrate_02,
-            description='Specifying usb port baudrate to connected lidar 02'),
+            description='Specifying usb port baudrate to connected lidar 02')
     frame_id_02_arg = DeclareLaunchArgument(
             'frame_id_02',
             default_value=frame_id_02,
-            description='Specifying frame_id of lidar 02'),
+            description='Specifying frame_id of lidar 02')
     
     inverted_arg = DeclareLaunchArgument(
             'inverted',
             default_value=inverted,
-            description='Specifying whether or not to invert scan data'),
+            description='Specifying whether or not to invert scan data')
 
     angle_compensate_arg = DeclareLaunchArgument(
             'angle_compensate',
             default_value=angle_compensate,
-            description='Specifying whether or not to enable angle_compensate of scan data'),
+            description='Specifying whether or not to enable angle_compensate of scan data')
 
     scan_mode_arg = DeclareLaunchArgument(
             'scan_mode',
             default_value=scan_mode,
-            description='Specifying scan mode of lidar'),
+            description='Specifying scan mode of lidar')
     
     sllidar_node_01 = Node(
             package='sllidar_ros2',
@@ -100,7 +100,7 @@ def generate_launch_description():
             remappings=[
                 ('scan', 'scan_01')
             ],
-            output='screen'),
+            output='screen')
     
     sllidar_node_02 = Node(
             package='sllidar_ros2',
@@ -116,7 +116,7 @@ def generate_launch_description():
             remappings=[
                 ('scan', 'scan_02')
             ],
-            output='screen'),
+            output='screen')
     
     rviz = Node(
         package='rviz2',
