@@ -18,11 +18,6 @@ def generate_launch_description():
     serial_baudrate_01 = LaunchConfiguration('serial_baudrate_01', default='115200')
     frame_id_01 = LaunchConfiguration('frame_id_01', default='lidarFront')
 
-    #Lidar 02
-    serial_port_02 = LaunchConfiguration('serial_port_02', default='/dev/ttyUSB2')
-    serial_baudrate_02 = LaunchConfiguration('serial_baudrate_02', default='115200')
-    frame_id_02 = LaunchConfiguration('frame_id_02', default='lidarBack')
-
     channel_type =  LaunchConfiguration('channel_type', default='serial')
     inverted = LaunchConfiguration('inverted', default='false')
     angle_compensate = LaunchConfiguration('angle_compensate', default='true')
@@ -57,19 +52,6 @@ def generate_launch_description():
             default_value=frame_id_01,
             description='Specifying frame_id of lidar 01')
     
-    serial_port_02_arg = DeclareLaunchArgument(
-            'serial_port_02',
-            default_value=serial_port_02,
-            description='Specifying usb port to connected lidar 02')
-    serial_baudrate_02_arg = DeclareLaunchArgument(
-            'serial_baudrate_02',
-            default_value=serial_baudrate_02,
-            description='Specifying usb port baudrate to connected lidar 02')
-    frame_id_02_arg = DeclareLaunchArgument(
-            'frame_id_02',
-            default_value=frame_id_02,
-            description='Specifying frame_id of lidar 02')
-    
     inverted_arg = DeclareLaunchArgument(
             'inverted',
             default_value=inverted,
@@ -101,22 +83,23 @@ def generate_launch_description():
             ],
             output='screen')
     
-    
-    sllidar_node_02 = Node(
-            package='sllidar_ros2',
-            executable='sllidar_node',
-            name='sllidar_node_02',
-            parameters=[{'channel_type':channel_type,
-                         'serial_port': serial_port_02, 
-                         'serial_baudrate': serial_baudrate_02, 
-                         'frame_id': frame_id_02,
-                         'inverted': inverted, 
-                         'angle_compensate': angle_compensate, 
-                         'scan_mode': scan_mode}],
-            remappings=[
-                ('scan', 'back_scan')
-            ],
-            output='screen')
+    laser_filter_params = os.path.join(
+        get_package_share_directory('sllidar_ros2'),
+        'config',
+        'laser_filter.yaml'
+    )
+
+    laser_filter_node = Node(
+        package='laser_filters',
+        executable='scan_to_scan_filter_chain',
+        name='laser_filter',
+        output='screen',
+        parameters=[laser_filter_params],
+        remappings=[
+            ('scan', '/front_scan'),    # tópico original
+            ('scan_filtered', '/scan')  # saída
+        ]
+    )
     
     rviz = Node(
         package='rviz2',
@@ -134,15 +117,12 @@ def generate_launch_description():
         serial_port_01_arg,
         serial_baudrate_01_arg,
         frame_id_01_arg,
-        serial_port_02_arg,
-        serial_baudrate_02_arg,
-        frame_id_02_arg,
         inverted_arg,
         angle_compensate_arg,
         scan_mode_arg,
 
         sllidar_node_01,
-        sllidar_node_02,
+        laser_filter_node,
 
         rviz
     ])
