@@ -1,4 +1,4 @@
-# SLAMTEC LIDAR ROS2 Package
+# @Work Sllidar ROS2 Fork Package
 
 ROS2 node for SLAMTEC LIDAR
 
@@ -26,65 +26,7 @@ SLAMTEC LIDAR Tutorial: <https://github.com/robopeak/rplidar_ros/wiki>
 |RPLIDAR S2E             |
 |RPLIDAR T1              |
 
-## How to install ROS2
-
-[rolling](https://docs.ros.org/en/rolling/Installation.html),
-[humble](https://docs.ros.org/en/humble/Installation.html),
-[galactic](https://docs.ros.org/en/galactic/Installation.html),
-[foxy](https://docs.ros.org/en/foxy/Installation.html)
-
-## How to configuring your ROS 2 environment
-
-[Configuring your ROS 2 environment](https://docs.ros.org/en/foxy/Tutorials/Configuring-ROS2-Environment.html)
-
-## How to Create a ROS2 workspace
-
-[ROS2 Tutorials Creating a workspace](https://docs.ros.org/en/foxy/Tutorials/Workspace/Creating-A-Workspace.html)
-
-1. example, choose the directory name ros2_ws, for "development workspace" :
-
-   ```bash
-   mkdir -p ~/ros2_ws/src
-   cd ~/ros2_ws/src
-   ```
-
-## Compile & Install sllidar_ros2 package
-
-1. Clone sllidar_ros2 package from github
-
-   Ensure you're still in the ros2_ws/src directory before you clone:
-
-   ```bash
-   git clone https://github.com/Slamtec/sllidar_ros2.git
-   ``` 
-
-2. Build sllidar_ros2 package
-
-   From the root of your workspace (ros2_ws), you can now build sllidar_ros2 package using the command:
-
-   ```bash
-   cd ~/ros2_ws/
-   source /opt/ros/<rosdistro>/setup.bash
-   colcon build --symlink-install
-   ```
-
-   if you find output like "colcon:command not found",you need separate [install colcon](https://docs.ros.org/en/foxy/Tutorials/Colcon-Tutorial.html#install-colcon) build tools.
-
-3. Package environment setup
-
-    ```bash
-    source ./install/setup.bash
-    ```
-
-    Note: Add permanent workspace environment variables.
-    It's convenientif the ROS2 environment variables are automatically added to your bash session every time a new shell is launched:
-
-    ```bash
-    $echo "source <your_own_ros2_ws>/install/setup.bash" >> ~/.bashrc
-    $source ~/.bashrc
-    ```
-
-4. Create udev rules for rplidar
+## Use sllidar_ros2 package
 
    sllidar_ros2 running requires the read and write permissions of the serial device.
    You can manually modify it with the following command:
@@ -99,6 +41,38 @@ SLAMTEC LIDAR Tutorial: <https://github.com/robopeak/rplidar_ros/wiki>
    cd src/rpldiar_ros/
    source scripts/create_udev_rules.sh
    ```
+
+## Work Specific Launches
+
+### `double_a1.launch.py`
+
+This launch is used to run two A1M8 LIDAR sensors simultaneously.
+
+What it does:
+* Starts two independent nodes of the sllidar_node.
+* Automatically remaps topics to avoid conflicts: Lidar 01 publishes to /front_scan and Lidar 02 to /back_scan.
+* Allows configuring distinct serial ports and frame_ids for each sensor.
+* Optionally opens RViz for visualization.
+
+```bash
+ros2 launch sllidar_ros2 double_a1.launch.py ​​serial_port_01:=/dev/ttyUSB0 serial_port_02:=/dev/ttyUSB1
+```
+
+### `single_a1.launch.py`
+
+This launch is used to operate a single A1M8 LIDAR with an integrated filter chain.
+
+What it does:
+* Starts a sllidar_node mapped to the topic `/front_scan`.
+* Starts a laser_filters node.
+* Filtering: It receives the data from `/front_scan`, applies the filters defined in `config/laser_filter.yaml` and publishes the clean result to the default topic `/scan`.
+
+```bash
+ros2 launch sllidar_ros2 single_a1.launch.py ​​serial_port_01:=/dev/ttyUSB0
+```
+
+**NOTE:** When using two lidars simultaneously when laser_scan_merger is applied, the reference frame of the result becomes the base_link. When using only one lidar, a filter is applied to use only a specific portion of the lidar, but the reference frame becomes the lidar link. Using a single lidar with SlamToolBox creates a map only in front of the lidar.
+
 
 ## Run sllidar_ros2
 
