@@ -14,7 +14,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     #Lidar 01
-    serial_port_01 = LaunchConfiguration('serial_port_01', default='/dev/ttyUSB1')
+    serial_port_01 = LaunchConfiguration('serial_port_01', default='/dev/ttyUSB0')
     serial_baudrate_01 = LaunchConfiguration('serial_baudrate_01', default='115200')
     frame_id_01 = LaunchConfiguration('frame_id_01', default='lidarFront')
 
